@@ -1,35 +1,34 @@
 import requests
 
+API_KEY="e35ce937"
+url_busqueda = "http://www.omdbapi.com/?apikey={}&s={}"
+url_identificador = "http://www.omdbapi.com/?apikey={}&i={}"
+
+def peticion(url):
+    respuesta = requests.get(url)
+    if respuesta.status_code == 200:
+        datos = respuesta.json()
+        if datos['Response'] == "False":
+            print(datos["Error"])
+            # ver que hacer con el error
+        else:
+            return datos
+    else:
+        print("Error en consulta por id:", nueva_respuesta.status_code)
+        # ver que hacer con el error
+        
+        primera_peli = datos['Search'][0]
+        clave = primera_peli['imdbID']
+
 pregunta = input("Titulo de la película: ")
 
-API_KEY = "e35ce937"
+respuesta = peticion(url_busqueda.format(API_KEY, pregunta))
+primera_peli = respuesta["Search"][0]
+clave = primera_peli["imdbID"]
 
-direccion = f"http://www.omdbapi.com/?apikey={API_KEY}&Ss={pregunta}"
+respuesta = peticion(url_identificador.format(API_KEY, clave))
+titulo = respuesta['Title']
+agno = respuesta['Year']
+director = respuesta['Director']
+print("La peli {}, estrenada en el año {}, fue dirigida por {}".format(titulo, agno, director))    
 
-respuesta = requests.get(direccion)
-
-if respuesta.status_code == 200:
-    datos = respuesta.json()
-    if datos ["Response"] == "False":
-        print(datos("Error"))
-    else:
-        primera_peli = datos["Search"][0]
-        clave = primera_peli["imbID"]
-        
-        otra_direccion = f"http://www.omdbapi.com/?apikey={API_KEY}&Si={clave}"
-        nueva_respuesta = requests.get(otra_direccion)
-        if nueva_respuesta.status_code == 200:
-            datos = nueva_respuesta.json()
-            if datos ["Response"] == "False":
-            print(datos("Error"))
-            else:
-                titulo = datos["Title"]
-                agno = datos["Year"]
-                director = datos["Director"]
-                print(f"La pelicula {titulo}, estrenada en el año {agno}, fue dirigida por {director}")
-        else:
-            print("Error en consulta:", nueva_respuesta.status_code)
-else:
-    print("Error en consulta:", respuesta.status_code)
-    
-            
